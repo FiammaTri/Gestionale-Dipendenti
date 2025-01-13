@@ -30,12 +30,33 @@ public class Database {
 			 
 			 
 			//creazione tabella Linguaggio
-			 
+			  String createLinguaggioTable = "CREATE TABLE IF NOT EXISTS Linguaggio (" +
+	                    "id_Linguaggio INT AUTO_INCREMENT PRIMARY KEY, " +
+	                    "tipologia VARCHAR(100), " +
+	                    "nome VARCHAR(100) NOT NULL" +
+	                    ");";
 			 
 			//creazione tabella Team
+			  String createTeamTable = "CREATE TABLE IF NOT EXISTS Team (" +
+	                    "id_Team INT AUTO_INCREMENT PRIMARY KEY, " +
+	                    "id_Progetti INT, " +
+	                    "descrizionelavoro TEXT, " +
+	                    "nome VARCHAR(100), " +
+	                    "id_Manager INT, " +
+	                    "FOREIGN KEY (id_Progetti) REFERENCES Progetti(id_Progetti) " +
+	                    "ON DELETE SET NULL " +
+	                    "ON UPDATE CASCADE, " +
+	                    "FOREIGN KEY (id_Manager) REFERENCES Manager(id_Manager) " +
+	                    "ON DELETE SET NULL " +
+	                    "ON UPDATE CASCADE" +
+	                    ");";
 			 
 			 
 			//creazione tabella Progetti
+			  String createProgettiTable = "CREATE TABLE IF NOT EXISTS Progetti (" +
+	                    "id_Progetti INT AUTO_INCREMENT PRIMARY KEY, " +
+	                    "nome VARCHAR(100) NOT NULL" +
+	                    ");";
 			 
 			 
 		}
