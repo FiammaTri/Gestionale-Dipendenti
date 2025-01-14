@@ -1,8 +1,27 @@
 //Classe utilizzata per la gestione della tabella Team
 package Gestionale;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
 public class Team {
+
+	// Parametri di connessione statici
+	private static final String URL = "jdbc:mysql://localhost:3306/gestionaledipendenti";
+	private static final String USER = "root";
+	private static final String PASSWORD = "root";
+
 	// rendiamo gli attributi privati per poterli usare solo in questa classe
+	/*
+	 * parametro id che deve essere un intero, parametro nome che deve essere una
+	 * stringa, paramentro membri che anche questo va bene come stringa,
+	 */
+
 	private int id;
 	private String nome;
 	private String descrizione;
@@ -58,47 +77,100 @@ public class Team {
 		this.membri = membri; // aggiorna l'id dei membri
 	}
 
-	public void aggiungiMembro(int idMembro) {
-		String nuovoMembro = String.valueOf(idMembro); // Converte l'intero in stringa
-		if (!membri.contains(nuovoMembro)) {
-			if (membri.isEmpty()) {
-				membri = nuovoMembro; // Se la stringa è vuota, aggiungi direttamente il membro
-			} else {
-				membri += "," + nuovoMembro; // Altrimenti aggiungi una virgola e poi il membro
+	// Metodo per aggiungere un nuovo team al database
+	public static int aggiungiTeam(Scanner scanner) {
+
+		// inpur richiesto: nome, descrizione e membri inseriti tramite lo scanner
+		System.out.println("Inserire il NOME del team: ");
+		String nome = scanner.nextLine();
+		System.out.println("Inserire la DESCRIZIONE del team: ");
+		String descrizione = scanner.nextLine();
+		System.out.println("Inserire i MEMBRI del team (ID separati da virgola): ");
+		String membri = scanner.nextLine();
+        //utilizza una query sql insert to per inserire i dati nella tabella 
+		String sql = "INSERT INTO Team (nome, descrizione, membri) VALUES (?, ?, ?)";
+		try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+				//per prevenire SQL injection.
+				PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+			pstmt.setString(1, nome);
+			pstmt.setString(2, descrizione);
+			pstmt.setString(3, membri);
+
+			int affectedRows = pstmt.executeUpdate();
+			if (affectedRows == 0) {
+				throw new SQLException("Creazione del team fallita, nessuna riga aggiunta.");
 			}
-		}
-	}
 
-	public void rimuoviMembro(int idMembro) {
-		// Converte l'id in una stringa come abbiamo fatto in precedenza
-		String membroDaRimuovere = String.valueOf(idMembro);
-
-		// Ciclo ci controllo che controlla se l'id del membro esiste nella lista
-		if (membri.contains(membroDaRimuovere)) {
-			// Se l'id è l'unico membro, basta svuotare la lista
-			if (membri.equals(membroDaRimuovere)) {
-				membri = ""; // Rimuove il membro unico
-			} else {
-				// Se l'id è nel mezzo o alla fine, lo rimuoviamo usando replace
-				membri = membri.replace(membroDaRimuovere + ",", ""); // Rimuove il membro con la virgola dopo
-				membri = membri.replace("," + membroDaRimuovere, ""); // Rimuove il membro con la virgola prima
-				membri = membri.replace(membroDaRimuovere, ""); // Rimuove il membro se è l'unico
+			try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					System.out.println("Team aggiunto con successo.");
+					return generatedKeys.getInt(1);
+				} else {
+					throw new SQLException("Creazione del team fallita, ID non recuperato.");
+				}
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-
-		// Rimuove eventuali virgole in eccesso all'inizio o alla fine
-		if (membri.startsWith(",")) {
-			membri = membri.substring(1); // Rimuove la virgola iniziale
-		}
-		if (membri.endsWith(",")) {
-			membri = membri.substring(0, membri.length() - 1); // Rimuove la virgola finale
-		}
-
+		return -1; // In caso di errore
 	}
 
-	// Metodo per stampare i dettagli del team
-	public void stampaDettagli() {
-		System.out.println("ID: " + id + ", Nome: " + nome + ", Descrizione: " + descrizione); //output, stampa
-		System.out.println("Membri del Team: " + membri);
+	// Metodo per eliminare un team dal database
+	public static void eliminaTeam(Scanner scanner) {
+		System.out.println("Inserire l'ID del team da eliminare: ");
+		int idTeam = scanner.nextInt();
+		scanner.nextLine(); // Consuma il newline
+       //Eliminare i record corrispondenti
+		String sql = "DELETE FROM Team WHERE id = ?";
+		//conferma se l'eliminazione è avvenuta stampando un messaggio
+		try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setInt(1, idTeam);
+			int affectedRows = pstmt.executeUpdate();
+			if (affectedRows > 0) {
+				System.out.println("Team con ID " + idTeam + " eliminato correttamente.");
+			} else { //se l'id non è valido come id  o non corrisponde al team. avverte l'utente
+				System.out.println("Nessun team eliminato. Verificare l'ID.");
+			}
+        
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
+    // Metodo per aggiornare i dettagli di un team
+    public static void aggiornaTeam(Scanner scanner) {
+        System.out.println("Inserire l'ID del team da aggiornare: ");
+        int idTeam = scanner.nextInt();
+        scanner.nextLine(); // Consuma il newline
+        System.out.println("Inserire il NUOVO NOME del team: ");
+        String nome = scanner.nextLine();
+        System.out.println("Inserire la NUOVA DESCRIZIONE del team: ");
+        String descrizione = scanner.nextLine();
+        System.out.println("Inserire i NUOVI MEMBRI del team (ID separati da virgola): ");
+        String membri = scanner.nextLine();
+
+        String sql = "UPDATE Team SET nome = ?, descrizione = ?, membri = ? WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, nome);
+            pstmt.setString(2, descrizione);
+            pstmt.setString(3, membri);
+            pstmt.setInt(4, idTeam);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Il Team è stato aggiornato con successo.");
+            } else {
+                System.out.println("Nessun team aggiornato. Verifica nuovamente l'ID.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+

@@ -213,22 +213,27 @@ public class Main {
 		while(ripetizione) {
 			
 	        System.out.println("\033[1;4;34mInterfaccia Team:\033[0m");
+	        
 			
 			switch(richiesta(menu, "[1-7]", scanner)){
 			case 1:
+				Team.aggiungiTeam(scanner);
 				System.out.println("Hai scelto inserire un nuovo team.");
 				break;
 			case 2:
 				System.out.println("Hai scelto visualizza un determinato team.");
 				break;
 			case 3:
+				Team.aggiornaTeam(scanner);
 				System.out.println("Hai scelto aggiornare le informazioni di un team.");
 				break;
 			case 4:
+				Team.eliminaTeam(scanner);
 				System.out.println("Hai scelto eliminare un team.");
 				break;
 			case 5:
-				System.out.println("Hai scelto assegnare al team ad un nuovo progetto.");
+				
+		System.out.println("Hai scelto assegnare al team ad un nuovo progetto.");
 				break;
 			case 6:
 				System.out.println("Hai scelto calcolare lo stipendio totale del team.");
