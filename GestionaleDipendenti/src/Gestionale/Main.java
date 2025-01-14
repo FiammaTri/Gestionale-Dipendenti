@@ -81,12 +81,15 @@ public class Main {
 			switch(richiesta(menu, "[1-7]", scanner)){
 			case 1:
 				System.out.println("Hai scelto inserire un nuovo dipedente.");
+				
 				break;
 			case 2:
 				System.out.println("Hai scelto visualizza un determinato dipedente.");
+				
 				break;
 			case 3:
 				System.out.println("Hai scelto aggiornare le informazioni di un dipedente.");
+				
 				break;
 			case 4:
 				System.out.println("Hai scelto cambiare il ruolo di un dipedente.");
