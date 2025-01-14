@@ -66,13 +66,13 @@ public class Main {
 	 */
 	static void menuDipedenti(Scanner scanner) {
 		boolean ripetizione = true; //Uscita dal esecuzione continua
-		String menu= "\033[1m1) Inserire un nuovo dipedente.\n\033[0m"
-				+ "\033[1m2) Visualizza un determinato dipedente.\n\033[0m"
-				+ "\033[1m3) Aggiornare le informazioni di un dipedente.\n\033[0m"
-				+ "\033[1m4) Cambiare il ruolo di un dipedente.\n\033[0m"
-				+ "\033[1m5) Eliminare un dipedente.\n\033[0m"
-				+ "\033[1m6) Calcolare lo stipendio annuo di un diepdente.\n\033[0m"
-				+ "\033[1m7) Uscita.\n\033[0m";
+		String menu= "\033[1m1) Inserire un nuovo dipedente\n\033[0m"
+				+ "\033[1m2) Visualizza un determinato dipedente\n\033[0m"
+				+ "\033[1m3) Aggiornare le informazioni di un dipedente\n\033[0m"
+				+ "\033[1m4) Cambiare il ruolo di un dipedente\n\033[0m"
+				+ "\033[1m5) Eliminare un dipedente\n\033[0m"
+				+ "\033[1m6) Calcolare lo stipendio annuo di un diepdente\n\033[0m"
+				+ "\033[1m7) Uscita\n\033[0m";
 		//Ciclo per far continuare l'esecuzione
 		while(ripetizione) {
 			
@@ -81,24 +81,27 @@ public class Main {
 			switch(richiesta(menu, "[1-7]", scanner)){
 			case 1:
 				System.out.println("Hai scelto inserire un nuovo dipedente.");
-				
+				Employee.aggiuntaDipendente(scanner);
 				break;
 			case 2:
 				System.out.println("Hai scelto visualizza un determinato dipedente.");
-				
+				Employee.stampaDipendente(scanner);
 				break;
 			case 3:
 				System.out.println("Hai scelto aggiornare le informazioni di un dipedente.");
-				
+				Employee.aggiornamentoInfo(scanner);
 				break;
 			case 4:
 				System.out.println("Hai scelto cambiare il ruolo di un dipedente.");
+				Employee.aggiornamentoRuolo(scanner); //DA VERIFICARE
 				break;
 			case 5:
 				System.out.println("Hai scelto eliminare un dipedente.");
+				Employee.eliminazioneDipendente(scanner);
 				break;
 			case 6:
-				System.out.println("Hai scelto calcolare lo stipendio annuo.");
+				System.out.println("Hai calcolare il totale degli stipendi.");
+				//DA FARE
 				break;
 			case 7:
 				if(richiesta("Vuoi uscire dall'interfaccia dei dipedenti? [si/no]", scanner)) {
