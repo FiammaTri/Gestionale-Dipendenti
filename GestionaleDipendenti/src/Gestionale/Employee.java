@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.Scanner;
 public class Employee {
 
-	// Parametri di connessione
+	// Parametri di connessione 
 	private static final String URL = "jdbc:mysql://localhost:3306/gestionaledipendenti";
 	private static final String USER = "root";
 	private static final String PASSWORD = "root";
