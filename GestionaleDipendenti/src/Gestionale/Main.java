@@ -1,5 +1,6 @@
 package Gestionale;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -140,12 +141,40 @@ public class Main {
 			switch(richiesta(menu, "[1-6]", scanner)){
 			case 1:
 				System.out.println("Hai scelto assegnare un developer ad un nuovo team.");
+				Developer.assegnamentoTeam(scanner);
 				break;
 			case 2:
 				System.out.println("Hai scelto assegnare un developer ad un nuovo progetto.");
+				Developer.assegnamentoProgetto(scanner);
 				break;
 			case 3:
 				System.out.println("Hai scelto aggiornare i linguaggi di un developer.");
+				int scelta;
+		    	//Ciclo per far conitnuare l'inserimento anche in caso di errore
+			    while(true) {
+				    try {
+					   	System.out.print("1) Assegnare al developer un nuovo linguaggio.\n"
+					   			+ "2) Rimuovere un assegnazione di un linguaggio da un developer.\n"
+					   			+ "Scegli l'opzione [1-2]: ");
+					    scelta=scanner.nextInt();
+					    scanner.nextLine();
+				    	break;
+				    }catch(InputMismatchException e) { //Eccezione se i valori non siano numerici
+				    	System.err.println("Errore: hai inserito un valore non numerico");
+				    	e.printStackTrace();
+			    		System.err.print("Ripeti l'inserimento");
+			    	}catch(Exception e) {
+			            System.err.println("Errore: " + e.getMessage());
+			    	}
+			   	}
+			    //Mista la scelta dell utente
+			    if(scelta==1) {
+			    	Developer.assegnamentoLinguaggio(scanner);
+			    }if(scelta==2) {
+			    	Developer.togliereLinguaggio(scanner);
+			    }else {
+			    	System.out.println("Hai inserito un campo non valido.");
+			    }
 				break;
 			case 4:
 				System.out.println("Hai visualizzare tutti i progetti del developer.");

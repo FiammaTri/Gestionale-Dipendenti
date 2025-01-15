@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class Developer {
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/gestionaledipendenti";
+	private static final String URL = "jdbc:mysql://localhost:3306/impresa2";
 	private static final String USER = "root";
 	private static final String PASSWORD = "123";
 	
@@ -47,7 +47,7 @@ public class Developer {
 	    //Controlla se l'ide developer esista
 	    if(ricercaDeveloper(id_Dev, scanner) && ricercaTeam(id_Team, scanner)) {
 		   	//Preparo la query
-		    String sql = "UPDATE developer SET id_Team= ? WHERE id_Developer = ?;";
+		    String sql = "UPDATE impresa2.developer SET id_Team= ? WHERE id_Developer = ?;";
 		    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
 		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 		    	
@@ -75,7 +75,7 @@ public class Developer {
 	 * 
 	 * @return il nuovo id creato sulla tabella developerprogettiassegnati
 	 */
-	public static int assegnamentoProgetto (Scanner scanner) {
+	public static void assegnamentoProgetto (Scanner scanner) {
 		int id_Dev;
 		int id_Prog; 
 		
@@ -104,7 +104,7 @@ public class Developer {
 	    	String query= "SELECT * FROM impresa2.developerprogettiassegnati WHERE id_Developer=? AND progettiAssegnati=?;";
 	    	int controllo = controlloAssegnamento(query, id_Dev, id_Prog, scanner);
 	    	if(controllo==1 || controllo==-1){
-	    		return -1; //In caso di errore o se sia gia stato assegnato
+	    		return; //In caso di errore o se sia gia stato assegnato
 	    	}
 	    	
 		   	//Preparo la query
@@ -122,21 +122,13 @@ public class Developer {
 				if (affectedRows == 0) {
 					throw new SQLException("Assegnamento fallito. Nessun developer è stato aggiunto al nuovo progetto");
 				} else System.out.println("Developer aggiunto");
-				//Recupero la chiave generata (ID auto-increment)
-				try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-					if (generatedKeys.next()) {
-						return generatedKeys.getInt(1);
-					} else {
-						throw new SQLException("Creazione Developer fallita, ID non recuperato");
-					}
-				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 	    }else {
 	    	System.err.println("ID non valido.");
 	    }
-		return -1; //In caso di errore
+		return; //In caso di errore
 	}
 	
 	/**
@@ -216,7 +208,7 @@ public class Developer {
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	        pstmt.setInt(1, id1);
-	        pstmt.setInt(1, id2);
+	        pstmt.setInt(2, id2);
 
 	        //Eseguiamo la query
 	        ResultSet rs = pstmt.executeQuery();
