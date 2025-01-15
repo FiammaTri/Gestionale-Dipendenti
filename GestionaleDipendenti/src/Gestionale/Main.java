@@ -9,6 +9,8 @@ public class Main {
 	 * 
 	 * @param frase Una stringa usata per stampare la domanda.
 	 * @param scanner Lo scanner utilizzato per leggere l'input dell'utente.
+	 * 
+	 * @return La risposta dell'utente
 	 */
 	static boolean richiesta(String frase, Scanner scanner) {
 		boolean ris= false;
@@ -34,6 +36,8 @@ public class Main {
 	 * @param frase Una stringa usata per stampare le opzioni dei menu.
 	 * @param range Una stringa che indica un intervallo di numeri validi [n-n].
 	 * @param scanner Lo scanner utilizzato per leggere l'input dell'utente.
+	 * 
+	 * @return L'opzione di scelta nel menu
 	 */
 	static int richiesta (String frase, String range, Scanner scanner) {
 		String scelta=" ";
