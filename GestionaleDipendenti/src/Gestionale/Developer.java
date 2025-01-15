@@ -12,10 +12,6 @@ import java.util.Scanner;
 
 public class Developer {
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/impresa2";
-	private static final String USER = "root";
-	private static final String PASSWORD = "123";
-	
 	/**
 	 * Gestisce l'assegnamento del developer ad un team
 	 * 
@@ -45,10 +41,10 @@ public class Developer {
 	   	}
 	    
 	    //Controlla se l'ide developer esista
-	    if(ricercaDeveloper(id_Dev, scanner) && ricercaTeam(id_Team, scanner)) {
+	    if(ricercaDeveloper(id_Dev, scanner) && Team.ricercaTeam(id_Team, scanner)) {
 		   	//Preparo la query
 		    String sql = "UPDATE impresa2.developer SET id_Team= ? WHERE id_Developer = ?;";
-		    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+		    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 		    	
 		    	//Riempo i placeholder '?'
@@ -111,7 +107,7 @@ public class Developer {
 		    String sql = "INSERT INTO developerprogettiassegnati (id_Developer, progettiAssegnati) "
 		    			+ "VALUES (?,?);";
 		    
-			try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 					PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 	
 		    	//Riempo i placeholder '?'
@@ -138,7 +134,7 @@ public class Developer {
 	 * 
 	 * @return il nuovo id creato sulla tabella developerlinguaggi
 	 */
-	public static int assegnamentoLinguaggio (Scanner scanner) {
+	public static void assegnamentoLinguaggio (Scanner scanner) {
 		int id_Dev;
 		int id_Lig; 
 		
@@ -167,14 +163,14 @@ public class Developer {
 	    	String query = "SELECT * FROM impresa2.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
 	    	int controllo = controlloAssegnamento(query, id_Dev, id_Lig, scanner);
 	    	if(controllo==1 || controllo==-1){
-	    		return -1; //In caso di errore o se sia gia stato assegnato
+	    		return; //In caso di errore o se sia gia stato assegnato
 	    	}
 	    	
 		   	//Preparo la query
 		    String sql = "INSERT INTO developerlinguaggi (id_Developer, id_Linguaggio) "
 		    		+ "VALUES (?,?);";
 		    
-			try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 					PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 	
 		    	//Riempo i placeholder '?'
@@ -185,26 +181,18 @@ public class Developer {
 				if (affectedRows == 0) {
 					throw new SQLException("Assegnamento fallito. Nessun linguaggio è stato assegnato.");
 				} else System.out.println("Developer aggiunto");
-				//Recupero la chiave generata (ID auto-increment)
-				try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-					if (generatedKeys.next()) {
-						return generatedKeys.getInt(1);
-					} else {
-						throw new SQLException("Assegnazione nuovo linguaggio fallita, ID non recuperato");
-					}
-				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 	    }else {
 	    	System.err.println("ID non valido.");
 	    }
-		return -1; //In caso di errore
+		return; //In caso di errore
 	}
 	
 	
 	public static int controlloAssegnamento(String sql, int id1, int id2, Scanner scanner) {
-	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	        pstmt.setInt(1, id1);
@@ -237,7 +225,7 @@ public class Developer {
 	 */
 	public static int controlloAssegnamentoProgetto (int id_Dev, int id_Prog, Scanner scanner) {
 	    String sql = "SELECT * FROM impresa2.developerprogettiassegnati WHERE id_Developer=? AND progettiAssegnati=?;"; //Query per cercare se non esiste un altro doppione
-	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	        pstmt.setInt(1, id_Dev);
@@ -270,7 +258,7 @@ public class Developer {
 	 */
 	public static int controlloAssegnamentoLinguaggio (int id_Dev, int id_Lig, Scanner scanner) {
 	    String sql = "SELECT * FROM impresa2.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
-	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	        pstmt.setInt(1, id_Dev);
@@ -299,17 +287,17 @@ public class Developer {
 	 * 
 	 * @return  Id eliminato nella tabella developerlinguaggi
 	 */
-	public static int togliereLinguaggio (Scanner scanner) {
+	public static void togliereLinguaggio (Scanner scanner) {
 		int id_Dev;
 		int id_Lig; 
 		
     	//Ciclo per far conitnuare l'inserimento anche in caso di errore
 	    while(true) {
 		    try {
-			   	System.out.print("Inserire l'ID del developer da assegnare ad un nuovo linguaggio: ");
+			   	System.out.print("Inserire l'ID del developer da eliminare l'assegnare ad un linguaggio: ");
 			    id_Dev=scanner.nextInt();
 			    scanner.nextLine();
-		    	System.out.print("Inserisci l'ID del nuovo linguaggio da assegnare: ");
+		    	System.out.print("Inserisci l'ID del linguaggio assegnato da eliminare: ");
 		    	id_Lig=scanner.nextInt();
 		    	scanner.nextLine();
 		    	break;
@@ -327,13 +315,13 @@ public class Developer {
 	    	String query = "SELECT * FROM impresa2.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
 	    	int controllo = controlloAssegnamento(query, id_Dev, id_Lig, scanner);
 	    	if(controllo==0 || controllo==-1){
-	    		return -1; //In caso di errore o se sia gia stato assegnato
+	    		return; //In caso di errore o se sia gia stato assegnato
 	    	}
 	    	
 		   	//Preparo la query
 		    String sql = "DELETE FROM developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;";
 		    
-			try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 					PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 	
 		    	//Riempo i placeholder '?'
@@ -344,21 +332,13 @@ public class Developer {
 				if (affectedRows == 0) {
 					throw new SQLException("Eliminazione fallita.");
 				} else System.out.println("Eliminazione riuscita");
-				//Recupero la chiave generata (ID auto-increment)
-				try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-					if (generatedKeys.next()) {
-						return generatedKeys.getInt(1);
-					} else {
-						throw new SQLException("Eliminazione fallita, ID non recuperato");
-					}
-				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 	    }else {
 	    	System.err.println("ID non valido.");
 	    }
-		return -1; //In caso di errore
+		return; //In caso di errore
 	}
 	
 	/**
@@ -366,14 +346,14 @@ public class Developer {
 	 * 
 	 * @param scanner Lo scanner utilizzato per leggere l'input dell'utente.
 	 */
-	public void StampaDevProg (Scanner scanner) {
+	public static void StampaDevProg (Scanner scanner) {
 		
 		int sceltaId=0;
 	
     	//Ciclo per far conitnuare l'inserimento anche in caso di errore
 	    while(true) {
 		    try {
-		    	System.out.println("Inserire l'ID del developer da visualizzare: ");
+		    	System.out.print("Inserire l'ID del developer da visualizzare: ");
 		    	sceltaId=scanner.nextInt();
 		    	scanner.nextLine();
 		    	break;
@@ -393,32 +373,27 @@ public class Developer {
 	    }
     	
 	    String sql= " ";
-        sql = String.format("SELECT A.id_Developer, D.nome, D.cognome, D.stipendioBase, A.id_Team, C.id_Progetti\r\n"
-        		+ "FROM employee D INNER JOIN impresa2.developer A \r\n"
-        		+ "ON D.id_Employee = A. id_Employee\r\n"
-        		+ "INNER JOIN developerprogettiassegnati B\r\n"
-        		+ "ON  A.id_Developer = B.id_Developer\r\n"
-        		+ "INNER JOIN progetti C\r\n"
-        		+ "ON progettiAssegnati = id_Progetti\r\n"
-        		+ "WHERE A.id_Developer=%d\r\n"
-        		+ "GROUP BY A.id_Team, D.nome, D.cognome, D.stipendioBase, A.id_Team, C.id_Progetti;"
+        sql = String.format("SELECT A.id_Developer, C.nome, B.progettiAssegnati\r\n"
+        		+ "FROM impresa2.developer A\r\n"
+        		+ "INNER JOIN impresa2.developerprogettiassegnati B\r\n"
+        		+ "ON A.id_Developer = B.id_Developer\r\n"
+        		+ "INNER JOIN impresa2.progetti C\r\n"
+        		+ "ON B.progettiAssegnati = C.id_Progetti\r\n"
+        		+ "WHERE A.id_Developer = %d;"
         		, sceltaId);
         
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
         	
         		System.out.println("Informazioni developer:");
                 while (rs.next()) {
                     int id_Developer = rs.getInt("id_Developer");
+                    int id_Progetti = rs.getInt("progettiAssegnati");
                     String nome = rs.getString("nome");
-                    String cognome = rs.getString("cognome");
-                    double stipendioBase = rs.getDouble("stipendioBase");
-                    int id_Team = rs.getInt("id_Team");
-                    int id_Progetti = rs.getInt("id_Progetti");
 
-                    System.out.printf("ID: %d | Nome: %s | Cognome: %s | Stipendio Base: %.2f | ID Team: %d | ID Progetto: %d%n",
-                            id_Developer, nome, cognome, stipendioBase, id_Team, id_Progetti);
+                    System.out.printf("ID: %d | Nome progetto: %s | ID Progetto: %d%n",
+                            id_Developer, nome, id_Progetti);
                 }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -430,18 +405,18 @@ public class Developer {
 	 * 
 	 * @param scanner Lo scanner utilizzato per leggere l'input dell'utente.
 	 */
-	public void Stampa() {
+	public static void Stampa() {
 		String sql= " ";
-        sql = "SELECT A.id_Developer, D.nome, D.cognome, D.stipendioBase, A.id_Team, C.id_Progetti\r\n"
+        sql = "SELECT A.id_Developer, D.nome, D.cognome, A.id_Team, C.id_Progetti, C.nome AS nomeP\r\n"
         		+ "FROM employee D INNER JOIN impresa2.developer A \r\n"
         		+ "ON D.id_Employee = A. id_Employee\r\n"
-        		+ "INNER JOIN developerprogettiassegnati B\r\n"
+        		+ "LEFT JOIN developerprogettiassegnati B\r\n"
         		+ "ON  A.id_Developer = B.id_Developer\r\n"
         		+ "INNER JOIN progetti C\r\n"
         		+ "ON progettiAssegnati = id_Progetti\r\n"
-        		+ "GROUP BY A.id_Developer, A.id_Team, D.nome, D.cognome, D.stipendioBase, A.id_Team, C.id_Progetti;";
+        		+ "GROUP BY A.id_Developer, A.id_Team, D.nome, D.cognome, A.id_Team, C.id_Progetti, C.nome;";
         
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
         	
@@ -450,12 +425,12 @@ public class Developer {
                     int id_Developer = rs.getInt("id_Developer");
                     String nome = rs.getString("nome");
                     String cognome = rs.getString("cognome");
-                    double stipendioBase = rs.getDouble("stipendioBase");
                     int id_Team = rs.getInt("id_Team");
                     int id_Progetti = rs.getInt("id_Progetti");
+                    String nomeP = rs.getString("nomeP");
 
-                    System.out.printf("ID: %d | Nome: %s | Cognome: %s | Stipendio Base: %.2f | ID Team: %d | ID Progetto: %d%n",
-                            id_Developer, nome, cognome, stipendioBase, id_Team, id_Progetti);
+                    System.out.printf("ID: %d | Nome: %s | Cognome: %s | ID Team: %d | ID Progetto: %d | ID Nome progetto: %s%n",
+                            id_Developer, nome, cognome, id_Team, id_Progetti, nomeP);
                 }
             } catch (SQLException e) {
             e.printStackTrace();
@@ -472,7 +447,7 @@ public class Developer {
 	 */
 	public static boolean ricercaDeveloper(int id_Dev, Scanner scanner) {
 	    String sql = "SELECT * FROM impresa2.developer WHERE id_Developer=?;"; //Query per cercare il developer
-	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	        pstmt.setInt(1, id_Dev);
@@ -486,38 +461,6 @@ public class Developer {
 	        } else {
 	            System.out.println("Nessun developer trovato. Verifica l'ID.");
 	            return false; //Developer non trovato
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false; //In caso di errore
-	    }
-	}
-	
-	/**
-	 * Ricerca se un team esiste 
-	 * 
-	 * @param id_Team ID team.
-	 * @param scanner Lo scanner utilizzato per leggere l'input dell'utente.
-	 * 
-	 * @return  un valore booleano. è vero se l'id dato corrispende ad un team inserito
-	 */
-	public static boolean ricercaTeam(int id_Team, Scanner scanner) {
-	    String sql = "SELECT * FROM impresa2.team WHERE id_Team=?;"; //Query per cercare il Team
-	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-	        pstmt.setInt(1, id_Team);
-
-	        //Eseguiamo la query
-	        ResultSet rs = pstmt.executeQuery();
-	        
-	        if (rs.next()) { 
-	            System.out.println("Team con ID " + id_Team + " è stato trovato.");
-	            return true;
-	        } else {
-	            System.out.println("Nessun team trovato. Verifica l'ID.");
-	            return false; //Team non trovato
 	        }
 
 	    } catch (SQLException e) {

@@ -177,10 +177,12 @@ public class Main {
 			    }
 				break;
 			case 4:
-				System.out.println("Hai visualizzare tutti i progetti del developer.");
+				System.out.println("Hai scelto visualizzare tutti i progetti del developer.");
+				Developer.StampaDevProg(scanner);
 				break;
 			case 5:
 				System.out.println("Visualizzare tutti i developer e i loro relativi progetti.");
+				Developer.Stampa();
 				break;
 			case 6:
 				if(richiesta("Vuoi uscire dall'interfaccia developer? [si/no]", scanner)) {
@@ -209,12 +211,14 @@ public class Main {
 			
 	        System.out.println("\033[1;4;34mInterfaccia Manager:\033[0m");
 			
-			switch(richiesta(menu, "[1-3]", scanner)){
+			switch(richiesta(menu, "[1-4]", scanner)){
 			case 1:
 				System.out.println("Hai scelto assegnare un manager ad un nuovo team.");
+				Manager.assegnamentoTeam(scanner);
 				break;
 			case 2:
 				System.out.println("Hai visualizzare il team del manager.");
+				Manager.StampaManTeam(scanner);
 				break;
 			case 3:
 				if(richiesta("Vuoi uscire dall'interfaccia manager? [si/no]", scanner)) {
