@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Linguaggio {
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/impresa2";
+	private static final String URL = "jdbc:mysql://localhost:3306/gestionaledipendenti";
 	private static final String USER = "root";
 	private static final String PASSWORD = "123";
 	

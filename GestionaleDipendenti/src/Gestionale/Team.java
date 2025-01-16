@@ -171,38 +171,6 @@ public class Team {
             e.printStackTrace();
         }
     }
-    
-	/**
-	 * Ricerca se un team esiste 
-	 * 
-	 * @param id_Team ID team.
-	 * @param scanner Lo scanner utilizzato per leggere l'input dell'utente.
-	 * 
-	 * @return  un valore booleano. è vero se l'id dato corrispende ad un team inserito
-	 */
-	public static boolean ricercaTeam(int id_Team, Scanner scanner) {
-	    String sql = "SELECT * FROM impresa2.team WHERE id_Team=?;"; //Query per cercare il Team
-	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-	        pstmt.setInt(1, id_Team);
-
-	        //Eseguiamo la query
-	        ResultSet rs = pstmt.executeQuery();
-	        
-	        if (rs.next()) { 
-	            System.out.println("Team con ID " + id_Team + " è stato trovato.");
-	            return true;
-	        } else {
-	            System.out.println("Nessun team trovato. Verifica l'ID.");
-	            return false; //Team non trovato
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false; //In caso di errore
-	    }
-	}
 }
 
 
