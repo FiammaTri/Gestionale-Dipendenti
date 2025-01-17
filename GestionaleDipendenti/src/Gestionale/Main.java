@@ -2,6 +2,8 @@ package Gestionale;
 
 import java.util.Scanner;
 
+
+
 public class Main {
 	
 	/**
@@ -175,9 +177,11 @@ public class Main {
 			
 			switch(richiesta(menu, "[1-3]", scanner)){
 			case 1:
+				 Team.assegnaManager(scanner);
 				System.out.println("Hai scelto assegnare un manager ad un nuovo team.");
 				break;
 			case 2:
+				Team.visualizzaTeamManager(scanner);
 				System.out.println("Hai visualizzare il team del manager.");
 				break;
 			case 3:
@@ -218,6 +222,7 @@ public class Main {
 				System.out.println("Hai scelto inserire un nuovo team.");
 				break;
 			case 2:
+				 Team.visualizzaTeam(scanner);
 				System.out.println("Hai scelto visualizza un determinato team.");
 				break;
 			case 3:
@@ -229,10 +234,11 @@ public class Main {
 				System.out.println("Hai scelto eliminare un team.");
 				break;
 			case 5:
-				
-		System.out.println("Hai scelto assegnare al team ad un nuovo progetto.");
+				Team.assegnaTeamAProgetto(scanner);
+		        System.out.println("Hai scelto assegnare al team ad un nuovo progetto.");
 				break;
 			case 6:
+				Team.calcolaStipendioTotale(scanner);
 				System.out.println("Hai scelto calcolare lo stipendio totale del team.");
 				break;
 			case 7:

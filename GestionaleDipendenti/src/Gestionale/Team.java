@@ -12,9 +12,9 @@ import java.util.Scanner;
 public class Team {
 
 	// Parametri di connessione statici
-	private static final String URL = "jdbc:mysql://localhost:3306/gestionaledipendenti";
+	private static final String URL = "jdbc:mysql://localhost:3306/impresa2";
 	private static final String USER = "root";
-	private static final String PASSWORD = "root";
+	private static final String PASSWORD = "Rossosangue1!";
 
 	// rendiamo gli attributi privati per poterli usare solo in questa classe
 	/*
@@ -76,7 +76,7 @@ public class Team {
 	public void setMembri(String membri) {
 		this.membri = membri; // aggiorna l'id dei membri
 	}
-
+	
 	// Metodo per aggiungere un nuovo team al database
 	public static int aggiungiTeam(Scanner scanner) {
 
@@ -115,6 +115,32 @@ public class Team {
 		}
 		return -1; // In caso di errore
 	}
+	public static void visualizzaTeam(Scanner scanner) {
+	    System.out.println("Inserire l'ID del team da visualizzare: ");
+	    int idTeam = scanner.nextInt();
+	    scanner.nextLine(); // Consuma il newline
+
+	    String sql = "SELECT * FROM Team WHERE id = ?";
+	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setInt(1, idTeam);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            System.out.println("ID: " + rs.getInt("id"));
+	            System.out.println("Nome: " + rs.getString("nome"));
+	            System.out.println("Descrizione: " + rs.getString("descrizione"));
+	            System.out.println("Membri: " + rs.getString("membri"));
+	        } else {
+	            System.out.println("Nessun team trovato con l'ID specificato.");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
 
 	// Metodo per eliminare un team dal database
 	public static void eliminaTeam(Scanner scanner) {
@@ -139,6 +165,33 @@ public class Team {
 			e.printStackTrace();
 		}
 	}
+	public static void assegnaManager(Scanner scanner) {
+	    System.out.println("Inserire l'ID del team al quale assegnare un manager: ");
+	    int teamId = scanner.nextInt();
+	    scanner.nextLine(); // Consuma il newline
+	    System.out.println("Inserire l'ID del manager: ");
+	    int managerId = scanner.nextInt();
+	    scanner.nextLine(); // Consuma il newline
+
+	    String sql = "UPDATE Team SET managerId = ? WHERE id = ?";
+	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setInt(1, managerId);
+	        pstmt.setInt(2, teamId);
+
+	        int affectedRows = pstmt.executeUpdate();
+	        if (affectedRows > 0) {
+	            System.out.println("Manager assegnato correttamente al team.");
+	        } else {
+	            System.out.println("Nessun team aggiornato. Verifica l'ID.");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
     // Metodo per aggiornare i dettagli di un team
     public static void aggiornaTeam(Scanner scanner) {
         System.out.println("Inserire l'ID del team da aggiornare: ");
@@ -171,6 +224,87 @@ public class Team {
             e.printStackTrace();
         }
     }
+    public static void visualizzaTeamManager(Scanner scanner) {
+        System.out.println("Inserire l'ID del manager per visualizzare i suoi team: ");
+        int managerId = scanner.nextInt();
+        scanner.nextLine(); // Consuma il newline
+
+        String sql = "SELECT * FROM Team WHERE managerId = ?";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, managerId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                System.out.println("Team gestiti dal manager con ID " + managerId + ":");
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String nome = rs.getString("nome");
+                    String descrizione = rs.getString("descrizione");
+                    String membri = rs.getString("membri");
+
+                    System.out.println("ID: " + id + ", Nome: " + nome + ", Descrizione: " + descrizione + ", Membri: " + membri);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void assegnaTeamAProgetto(Scanner scanner) {
+        System.out.println("Inserire l'ID del team da assegnare: ");
+        int idTeam = scanner.nextInt();
+        scanner.nextLine(); // Consuma il newline
+
+        System.out.println("Inserire l'ID del progetto al quale assegnare il team: ");
+        int idProgetto = scanner.nextInt();
+        scanner.nextLine(); // Consuma il newline
+
+        String sql = "INSERT INTO TeamProgetto (id_team, id_progetto) VALUES (?, ?)";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idTeam);
+            pstmt.setInt(2, idProgetto);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Team assegnato al progetto con successo.");
+            } else {
+                System.out.println("Assegnazione del team al progetto fallita.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void calcolaStipendioTotale(Scanner scanner) {
+        System.out.println("Inserire l'ID del team: ");
+        int idTeam = scanner.nextInt();
+        scanner.nextLine(); // Consuma il newline
+
+        String sql = "SELECT SUM(d.stipendio) AS stipendioTotale " +
+                     "FROM Dipendenti d " +
+                     "INNER JOIN Team t ON FIND_IN_SET(d.id, t.membri) > 0 " +
+                     "WHERE t.id = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idTeam);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                double stipendioTotale = rs.getDouble("stipendioTotale");
+                System.out.println("Stipendio totale del team: " + stipendioTotale);
+            } else {
+                System.out.println("Nessun dato trovato per il team specificato.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
