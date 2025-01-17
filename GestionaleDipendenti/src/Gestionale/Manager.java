@@ -39,7 +39,7 @@ public class Manager {
 	    if(ricercaManger(id_Man, scanner) && Team.ricercaTeam(id_Team, scanner)) {
 	    	
 		   	//Preparo la query
-		    String sql = "UPDATE impresa2.team SET id_Manager = ? WHERE id_Team= ?;";
+		    String sql = "UPDATE gestionaledipendenti.team SET id_Manager = ? WHERE id_Team= ?;";
 		    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 		    	
@@ -93,11 +93,11 @@ public class Manager {
     	
 	    String sql= " ";
         sql = String.format("SELECT C.id_Team, B.nome, C.id_Developer, D.nome AS nomeD, D.cognome\r\n"
-        		+ "FROM impresa2.manager A INNER JOIN impresa2.team B \r\n"
+        		+ "FROM gestionaledipendenti.manager A INNER JOIN gestionaledipendenti.team B \r\n"
         		+ "ON A.id_Manager = B.id_Manager\r\n"
-        		+ "INNER JOIN impresa2.developer C\r\n"
+        		+ "INNER JOIN gestionaledipendenti.developer C\r\n"
         		+ "ON B.id_Team = C.id_Team\r\n"
-        		+ "INNER JOIN impresa2.employee D\r\n"
+        		+ "INNER JOIN gestionaledipendenti.employee D\r\n"
         		+ "ON D.ID_Employee = C.ID_Employee\r\n"
         		+ "WHERE A.id_Manager=%d;"
         		, sceltaId);
@@ -114,7 +114,7 @@ public class Manager {
                     String nomeD = rs.getString("nome");
                     String cognome = rs.getString("cognome");
 
-                    System.out.printf("ID team: %d | Nome team: %s | ID Developer: %d | Nome developer: %s | Cognome developer: %s%n",
+                    System.out.printf("ID team: %d | Nome team: %s | ID Manager: %d | Nome developer: %s | Cognome developer: %s%n",
                     		id_Team, nome, id_Developer, nomeD, cognome);
                 }
         } catch (SQLException e) {
@@ -131,7 +131,7 @@ public class Manager {
 	 * @return  un valore booleano. è vero se l'id dato corrispende ad un manager inserito
 	 */
 	public static boolean ricercaManger(int id_Man, Scanner scanner) {
-	    String sql = "SELECT * FROM impresa2.manager WHERE id_Manager=?;"; //Query per cercare il developer
+	    String sql = "SELECT * FROM gestionaledipendenti.manager WHERE id_Manager=?;"; //Query per cercare il developer
 	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 

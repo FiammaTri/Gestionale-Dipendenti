@@ -45,18 +45,16 @@ public class Main {
 		System.out.println(frase);
 			//Ciclo per vedere se l'input utente sia valido
 			do {
-				//Ciclo numero tentativi
-				for(int i=0; i<3; i++) {
-					System.out.print("Inserici il numero dell'opzione che vuoi selezionare: ");
-					scelta= scanner.nextLine().trim().toLowerCase();
-					//Controllo solo per i caratteri numerici
-					if(!scelta.matches("\\d+")) {
-						System.err.println("Il codice è solo caratteri numerici");
-					}else if(!scelta.matches(range)) {//Controlla se abbia inserito numeri giusti dell'intervallo
-						System.err.println("input non valido.");
-					}else {
-						break;
-					}
+				System.out.print("Inserici il numero dell'opzione che vuoi selezionare: ");
+				scelta= scanner.nextLine().trim().toLowerCase();
+				//Controllo solo per i caratteri numerici
+				if(!scelta.matches("\\d+")) {
+					System.err.println("Il codice è solo caratteri numerici");
+				}else if(!scelta.matches(range)) {//Controlla se abbia inserito numeri giusti dell'intervallo
+					System.err.println("input non valido.");
+				}else {
+					System.out.println();
+					break;
 				}
 			}while(!scelta.matches(range));
 		//Ritorna un intero
@@ -64,55 +62,62 @@ public class Main {
 	}
 	
 	/**
-	 * Gestisce il menu per gestire tutte le opzioni possibile effettuabili sui dipedenti
+	 * Gestisce il menu per gestire tutte le opzioni possibile effettuabili sui dipendenti
 	 *
 	 * @param scanner Lo scanner utilizzato per leggere l'input dell'utente.
 	 * 
 	 */
-	static void menuDipedenti(Scanner scanner) {
+	static void menuDipendenti(Scanner scanner) {
 		boolean ripetizione = true; //Uscita dal esecuzione continua
-		String menu= "\033[1m1) Inserire un nuovo dipedente\n\033[0m"
-				+ "\033[1m2) Visualizza un determinato dipedente\n\033[0m"
-				+ "\033[1m3) Aggiornare le informazioni di un dipedente\n\033[0m"
-				+ "\033[1m4) Cambiare il ruolo di un dipedente\n\033[0m"
-				+ "\033[1m5) Eliminare un dipedente\n\033[0m"
-				+ "\033[1m6) Calcolare lo stipendio annuo di un diepdente\n\033[0m"
+		String menu= "\033[1m1) Inserire un nuovo dipendente\n\033[0m"
+				+ "\033[1m2) Visualizza un determinato dipendente\n\033[0m"
+				+ "\033[1m3) Aggiornare le informazioni di un dipendente\n\033[0m"
+				+ "\033[1m4) Cambiare il ruolo di un dipendente\n\033[0m"
+				+ "\033[1m5) Eliminare un dipendente\n\033[0m"
+				+ "\033[1m6) Calcolare lo stipendio mensile e annuo di tutti i dipendenti\n\033[0m"
 				+ "\033[1m7) Uscita\n\033[0m";
 		//Ciclo per far continuare l'esecuzione
 		while(ripetizione) {
 			
-	        System.out.println("\033[1;4;34mInterfaccia Dipedenti:\033[0m");
+	        System.out.println("\033[1;4;33mInterfaccia Dipendenti:\033[0m");
 			
 			switch(richiesta(menu, "[1-7]", scanner)){
 			case 1:
-				System.out.println("Hai scelto inserire un nuovo dipedente.");
+				System.out.println("Hai scelto inserire un nuovo dipendente.");
 				Employee.aggiuntaDipendente(scanner);
+				System.out.println();
 				break;
 			case 2:
-				System.out.println("Hai scelto visualizza un determinato dipedente.");
+				System.out.println("Hai scelto visualizza un determinato dipendente.");
 				Employee.stampaDipendente(scanner);
+				System.out.println();
 				break;
 			case 3:
-				System.out.println("Hai scelto aggiornare le informazioni di un dipedente.");
+				System.out.println("Hai scelto aggiornare le informazioni di un dipendente.");
 				Employee.aggiornamentoInfo(scanner);
+				System.out.println();
 				break;
 			case 4:
-				System.out.println("Hai scelto cambiare il ruolo di un dipedente.");
-				Employee.aggiornamentoRuolo(scanner); //DA VERIFICARE
+				System.out.println("Hai scelto cambiare il ruolo di un dipendente.");
+				Employee.aggiornamentoRuolo(scanner);
+				System.out.println();
 				break;
 			case 5:
-				System.out.println("Hai scelto eliminare un dipedente.");
+				System.out.println("Hai scelto eliminare un dipendente.");
 				Employee.eliminazioneDipendente(scanner);
+				System.out.println();
 				break;
 			case 6:
-				System.out.println("Hai calcolare il totale degli stipendi.");
-				//DA FARE
+				System.out.println("Hai richiesto calcolare il totale degli stipendi.");
+				Employee.calcoloStipendi();
+				System.out.println();
 				break;
 			case 7:
-				if(richiesta("Vuoi uscire dall'interfaccia dei dipedenti? [si/no]", scanner)) {
+				if(richiesta("Vuoi uscire dall'interfaccia dei dipendenti? [si/no]", scanner)) {
 					System.out.println("Avvio uscita dal programma...");
 					ripetizione = false; //Chiude direttamente l'esecuzione
 				}
+				System.out.println();
 				 break;
 			}
 			System.out.println();
@@ -136,16 +141,18 @@ public class Main {
 		//Ciclo per far continuare l'esecuzione
 		while(ripetizione) {
 			
-	        System.out.println("\033[1;4;34mInterfaccia Developer:\033[0m");
+	        System.out.println("\033[1;4;33mInterfaccia Developer:\033[0m");
 			
 			switch(richiesta(menu, "[1-6]", scanner)){
 			case 1:
 				System.out.println("Hai scelto assegnare un developer ad un nuovo team.");
 				Developer.assegnamentoTeam(scanner);
+				System.out.println();
 				break;
 			case 2:
 				System.out.println("Hai scelto assegnare un developer ad un nuovo progetto.");
 				Developer.assegnamentoProgetto(scanner);
+				System.out.println();
 				break;
 			case 3:
 				System.out.println("Hai scelto aggiornare i linguaggi di un developer.");
@@ -172,23 +179,25 @@ public class Main {
 			    	Developer.assegnamentoLinguaggio(scanner);
 			    }if(scelta==2) {
 			    	Developer.togliereLinguaggio(scanner);
-			    }else {
-			    	System.out.println("Hai inserito un campo non valido.");
 			    }
+			    System.out.println();
 				break;
 			case 4:
 				System.out.println("Hai scelto visualizzare tutti i progetti del developer.");
 				Developer.StampaDevProg(scanner);
+				System.out.println();
 				break;
 			case 5:
 				System.out.println("Visualizzare tutti i developer e i loro relativi progetti.");
 				Developer.Stampa();
+				System.out.println();
 				break;
 			case 6:
 				if(richiesta("Vuoi uscire dall'interfaccia developer? [si/no]", scanner)) {
 					System.out.println("Avvio uscita dal programma...");
 					ripetizione = false; //Chiude direttamente l'esecuzione
 				}
+				System.out.println();
 				 break;
 			}
 			System.out.println();
@@ -209,22 +218,25 @@ public class Main {
 		//Ciclo per far continuare l'esecuzione
 		while(ripetizione) {
 			
-	        System.out.println("\033[1;4;34mInterfaccia Manager:\033[0m");
+	        System.out.println("\033[1;4;33mInterfaccia Manager:\033[0m");
 			
-			switch(richiesta(menu, "[1-4]", scanner)){
+			switch(richiesta(menu, "[1-3]", scanner)){
 			case 1:
 				System.out.println("Hai scelto assegnare un manager ad un nuovo team.");
 				Manager.assegnamentoTeam(scanner);
+				System.out.println();
 				break;
 			case 2:
 				System.out.println("Hai visualizzare il team del manager.");
 				Manager.StampaManTeam(scanner);
+				System.out.println();
 				break;
 			case 3:
 				if(richiesta("Vuoi uscire dall'interfaccia manager? [si/no]", scanner)) {
 					System.out.println("Avvio uscita dal programma...");
 					ripetizione = false; //Chiude direttamente l'esecuzione
 				}
+				System.out.println();
 				 break;
 			}
 			System.out.println();
@@ -239,47 +251,55 @@ public class Main {
 	 */
 	static void menuTeam(Scanner scanner) {
 		boolean ripetizione = true; //Uscita dal esecuzione continua
-		String menu= "\033[1m2)1) Inserisci un nuovo team.\n\033[0m"
-				+ "\033[1m2)2) Visualizzare infromazione del team.\n\033[0m"
-				+ "\033[1m2)3) Modificare un team.\n\033[0m"
-				+ "\033[1m2)4) Eliminare un team.\n\033[0m"
-				+ "\033[1m2)5) Assegnare al team ad un nuovo progetto.\n\033[0m"
-				+ "\033[1m2)6) Calcolare lo stipendio totale del team.\n\033[0m"
-				+ "\033[1m2)7) Uscita.\n\033[0m";
+		String menu= "\033[1m1) Inserisci un nuovo team.\n\033[0m"
+				+ "\033[1m2) Visualizzare informazioni del team.\n\033[0m"
+				+ "\033[1m3) Modificare un team.\n\033[0m"
+				+ "\033[1m4) Eliminare un team.\n\033[0m"
+				+ "\033[1m5) Assegnare al team ad un nuovo progetto.\n\033[0m"
+				+ "\033[1m6) Calcolare lo stipendio totale del team.\n\033[0m"
+				+ "\033[1m7) Uscita.\n\033[0m";
 		//Ciclo per far continuare l'esecuzione
 		while(ripetizione) {
 			
-	        System.out.println("\033[1;4;34mInterfaccia Team:\033[0m");
-	        
-			
+	        System.out.println("\033[1;4;33mInterfaccia Team:\033[0m");
+
 			switch(richiesta(menu, "[1-7]", scanner)){
 			case 1:
-				Team.aggiungiTeam(scanner);
 				System.out.println("Hai scelto inserire un nuovo team.");
+				Team.aggiungiTeam(scanner);
+				System.out.println();
 				break;
 			case 2:
 				System.out.println("Hai scelto visualizza un determinato team.");
+				Team.visualizzaTeam(scanner);
+				System.out.println();
 				break;
 			case 3:
-				Team.aggiornaTeam(scanner);
 				System.out.println("Hai scelto aggiornare le informazioni di un team.");
+				Team.aggiornaTeam(scanner);
+				System.out.println();
 				break;
 			case 4:
-				Team.eliminaTeam(scanner);
 				System.out.println("Hai scelto eliminare un team.");
+				Team.eliminaTeam(scanner);
+				System.out.println();
 				break;
-			case 5:
-				
-		System.out.println("Hai scelto assegnare al team ad un nuovo progetto.");
+			case 5:				
+				System.out.println("Hai scelto assegnare al team ad un nuovo progetto.");
+				Team.assegnaTeamAProgetto(scanner);
+				System.out.println();
 				break;
 			case 6:
 				System.out.println("Hai scelto calcolare lo stipendio totale del team.");
+				Team.calcolaStipendioTotale(scanner);
+				System.out.println();
 				break;
 			case 7:
 				if(richiesta("Vuoi uscire dall'interfaccia team? [si/no]", scanner)) {
 					System.out.println("Avvio uscita dal programma...");
 					ripetizione = false; //Chiude direttamente l'esecuzione
 				}
+				System.out.println();
 				 break;
 			}
 
@@ -295,38 +315,49 @@ public class Main {
 	 */
 	static void menuProgetto(Scanner scanner) {
 		boolean ripetizione = true; //Uscita dal esecuzione continua
-		String menu= "\033[1m2)1) Inserisci un nuovo progetto.\n\033[0m"
-				+ "\033[1m2)2) Visualizzare infromazione del progetto.\n\033[0m"
-				+ "\033[1m2)3) Modificare un progetto.\n\033[0m"
-				+ "\033[1m2)4) Eliminare un progetto.\n\033[0m"
-				+ "\033[1m2)5) Calcolare lo stipendio totale del progetto.\n\033[0m"
-				+ "\033[1m2)6) Uscita.\n\033[0m";
+		String menu= "\033[1m1) Inserisci un nuovo progetto.\n\033[0m"
+				+ "\033[1m2) Visualizzare infromazione del progetto.\n\033[0m"
+				+ "\033[1m3) Modificare un progetto.\n\033[0m"
+				+ "\033[1m4) Eliminare un progetto.\n\033[0m"
+				+ "\033[1m5) Calcolare lo stipendio totale dei developer per ogni progetto.\n\033[0m"
+				+ "\033[1m6) Uscita.\n\033[0m";
 		//Ciclo per far continuare l'esecuzione
 		while(ripetizione) {
 			
-	        System.out.println("\033[1;4;34mInterfaccia Progetto:\033[0m");
+	        System.out.println("\033[1;4;33mInterfaccia Progetto:\033[0m");
 			
 			switch(richiesta(menu, "[1-6]", scanner)){
 			case 1:
 				System.out.println("Hai scelto inserire un nuovo progetto.");
+				Progetti.InserisciProg(scanner);
+				System.out.println();
 				break;
 			case 2:
 				System.out.println("Hai scelto visualizza un determinato progetto.");
+				Progetti.Stampa();
+				System.out.println();
 				break;
 			case 3:
 				System.out.println("Hai scelto aggiornare le informazioni di un progetto.");
+				Progetti.aggiornamentoProg(scanner);
+				System.out.println();
 				break;
 			case 4:
 				System.out.println("Hai scelto eliminare un progetto.");
+				Progetti.eliminazioneProgetto(scanner);
+				System.out.println();
 				break;
 			case 5:
 				System.out.println("Hai scelto calcolare lo stipendio totale del team.");
+				Progetti.StampaStipendi();
+				System.out.println();
 				break;
 			case 6:
 				if(richiesta("Vuoi uscire dall'interfaccia dei progetti? [si/no]", scanner)) {
 					System.out.println("Avvio uscita dal programma...");
 					ripetizione = false; //Chiude direttamente l'esecuzione
 				}
+				System.out.println();
 				 break;
 			}
 			
@@ -352,13 +383,13 @@ public class Main {
 					+ "\033[1m5) Gestione dei progetti.\n\033[0m"
 					+ "\033[1m6) Uscita.\n\033[0m";
 			
-	        System.out.println("\033[1;4;34mInterfaccia Programma:\033[0m");
+	        System.out.println("\033[1;4;33mInterfaccia Programma:\033[0m");
 			
 			//menu con cui interegisce l'utente
 			switch(richiesta(menu, "[1-8]", scanner)) {
 				case 1:
 					System.out.println("Hai scelto gestione dei dipedenti.");
-					menuDipedenti(scanner); //Richiamo interfaccia gestione dei dipedenti
+					menuDipendenti(scanner); //Richiamo interfaccia gestione dei dipedenti
 					break;
 				case 2:
 					System.out.println("Hai scelto gestione dei developer");

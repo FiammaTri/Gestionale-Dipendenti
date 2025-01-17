@@ -10,10 +10,6 @@ import java.util.Scanner;
 
 public class Linguaggio {
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/impresa2";
-	private static final String USER = "root";
-	private static final String PASSWORD = "123";
-	
 	
 	/**
 	 * Ricerca se un linguaggio esiste 
@@ -25,7 +21,7 @@ public class Linguaggio {
 	 */
 	public static boolean ricercaLinguaggio(int id_Lig, Scanner scanner) {
 	    String sql = "SELECT * FROM linguaggio WHERE id_Linguaggio= ?;"; //Query per cercare il progetto
-	    try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	        pstmt.setInt(1, id_Lig);

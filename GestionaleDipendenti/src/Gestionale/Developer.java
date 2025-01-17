@@ -43,7 +43,7 @@ public class Developer {
 	    //Controlla se l'ide developer esista
 	    if(ricercaDeveloper(id_Dev, scanner) && Team.ricercaTeam(id_Team, scanner)) {
 		   	//Preparo la query
-		    String sql = "UPDATE impresa2.developer SET id_Team= ? WHERE id_Developer = ?;";
+		    String sql = "UPDATE gestionaledipendenti.developer SET id_Team= ? WHERE id_Developer = ?;";
 		    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 		    	
@@ -97,7 +97,7 @@ public class Developer {
 	    //Controlla se l'ide developer esista
 	    if(ricercaDeveloper(id_Dev, scanner) && Progetti.ricercaProgetti(id_Prog, scanner)) {
 	    	
-	    	String query= "SELECT * FROM impresa2.developerprogettiassegnati WHERE id_Developer=? AND progettiAssegnati=?;";
+	    	String query= "SELECT * FROM gestionaledipendenti.developerprogettiassegnati WHERE id_Developer=? AND progettiAssegnati=?;";
 	    	int controllo = controlloAssegnamento(query, id_Dev, id_Prog, scanner);
 	    	if(controllo==1 || controllo==-1){
 	    		return; //In caso di errore o se sia gia stato assegnato
@@ -160,7 +160,7 @@ public class Developer {
 	    //Controlla se l'ide developer esista
 	    if(ricercaDeveloper(id_Dev, scanner) && Linguaggio.ricercaLinguaggio(id_Lig, scanner)) {
 	    	
-	    	String query = "SELECT * FROM impresa2.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
+	    	String query = "SELECT * FROM gestionaledipendenti.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
 	    	int controllo = controlloAssegnamento(query, id_Dev, id_Lig, scanner);
 	    	if(controllo==1 || controllo==-1){
 	    		return; //In caso di errore o se sia gia stato assegnato
@@ -224,7 +224,7 @@ public class Developer {
 	 * @return controlla se l'assegnazione esite
 	 */
 	public static int controlloAssegnamentoProgetto (int id_Dev, int id_Prog, Scanner scanner) {
-	    String sql = "SELECT * FROM impresa2.developerprogettiassegnati WHERE id_Developer=? AND progettiAssegnati=?;"; //Query per cercare se non esiste un altro doppione
+	    String sql = "SELECT * FROM gestionaledipendenti.developerprogettiassegnati WHERE id_Developer=? AND progettiAssegnati=?;"; //Query per cercare se non esiste un altro doppione
 	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -257,7 +257,7 @@ public class Developer {
 	 * @return controlla se l'assegnazione esite
 	 */
 	public static int controlloAssegnamentoLinguaggio (int id_Dev, int id_Lig, Scanner scanner) {
-	    String sql = "SELECT * FROM impresa2.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
+	    String sql = "SELECT * FROM gestionaledipendenti.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
 	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -312,7 +312,7 @@ public class Developer {
 	    
 	    //Controlla se l'ide developer esista
 	    if(ricercaDeveloper(id_Dev, scanner) && Linguaggio.ricercaLinguaggio(id_Lig, scanner)) {
-	    	String query = "SELECT * FROM impresa2.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
+	    	String query = "SELECT * FROM gestionaledipendenti.developerlinguaggi WHERE id_Developer=? AND id_Linguaggio=?;"; //Query per cercare se non esiste un altro doppione
 	    	int controllo = controlloAssegnamento(query, id_Dev, id_Lig, scanner);
 	    	if(controllo==0 || controllo==-1){
 	    		return; //In caso di errore o se sia gia stato assegnato
@@ -374,10 +374,10 @@ public class Developer {
     	
 	    String sql= " ";
         sql = String.format("SELECT A.id_Developer, C.nome, B.progettiAssegnati\r\n"
-        		+ "FROM impresa2.developer A\r\n"
-        		+ "INNER JOIN impresa2.developerprogettiassegnati B\r\n"
+        		+ "FROM gestionaledipendenti.developer A\r\n"
+        		+ "INNER JOIN gestionaledipendenti.developerprogettiassegnati B\r\n"
         		+ "ON A.id_Developer = B.id_Developer\r\n"
-        		+ "INNER JOIN impresa2.progetti C\r\n"
+        		+ "INNER JOIN gestionaledipendenti.progetti C\r\n"
         		+ "ON B.progettiAssegnati = C.id_Progetti\r\n"
         		+ "WHERE A.id_Developer = %d;"
         		, sceltaId);
@@ -408,7 +408,7 @@ public class Developer {
 	public static void Stampa() {
 		String sql= " ";
         sql = "SELECT A.id_Developer, D.nome, D.cognome, A.id_Team, C.id_Progetti, C.nome AS nomeP\r\n"
-        		+ "FROM employee D INNER JOIN impresa2.developer A \r\n"
+        		+ "FROM employee D INNER JOIN gestionaledipendenti.developer A \r\n"
         		+ "ON D.id_Employee = A. id_Employee\r\n"
         		+ "LEFT JOIN developerprogettiassegnati B\r\n"
         		+ "ON  A.id_Developer = B.id_Developer\r\n"
@@ -446,7 +446,7 @@ public class Developer {
 	 * @return  un valore booleano. è vero se l'id dato corrispende ad un developer inserito
 	 */
 	public static boolean ricercaDeveloper(int id_Dev, Scanner scanner) {
-	    String sql = "SELECT * FROM impresa2.developer WHERE id_Developer=?;"; //Query per cercare il developer
+	    String sql = "SELECT * FROM gestionaledipendenti.developer WHERE id_Developer=?;"; //Query per cercare il developer
 	    try (Connection conn = DriverManager.getConnection(Connessione.getURL(), Connessione.getUSER(), Connessione.getPASSWORD());
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
