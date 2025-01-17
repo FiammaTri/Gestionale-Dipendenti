@@ -10,11 +10,10 @@ public class Linguaggio {
 	//Classe utilizzata per la gestione della tabella Linguaggio
 
 
-
-		
+	// Parametri di connessione statici
 		private static final String URL = "jdbc:mysql://localhost:3306/impresa2";
 		private static final String USER = "root";
-		private static final String PASSWORD = "123";
+		private static final String PASSWORD = "Rossosangue1!";
 		
 		/**
 		 * Inserisce un nuovo linguaggio nella tabella.
